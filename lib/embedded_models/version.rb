@@ -1,3 +1,3 @@
-module Roleable
-  VERSION = '0.2.0'
+module EmbeddedModels
+  VERSION = '0.0.1'
 end
