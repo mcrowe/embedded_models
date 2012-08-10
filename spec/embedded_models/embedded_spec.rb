@@ -63,12 +63,41 @@ describe EmbeddedModels::Embedded do
     end
   end
 
-  describe 'save' do
+  describe '#[attribute]_changed?' do
+    it 'is true if the attribute has changed' do
+      @account.save!
+      @feature.limit_changed?.should be_false
+      @feature.limit = 2
+      @feature.limit_changed?.should be_true
+    end
+  end
+
+  describe '#save' do
     it 'persists any changes to the attributes' do
       @feature.limit = 2
       @feature.save
       @account.reload.feature_limit.should == 2
     end
+  end
+
+  describe '.before_update' do
+
+    before do
+      class Feature
+        before_update :double_limit
+
+        def double_limit
+          self.limit = limit * 2
+        end
+      end
+    end
+
+    it 'calls the before_update callbacks if any attributes have changed' do
+      @account.save!
+      @feature.should_receive(:double_limit)
+      @feature.update_attributes(:limit => 2)
+    end
+
   end
 
 end

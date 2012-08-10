@@ -34,4 +34,13 @@ describe EmbeddedModels::Base do
     end
   end
 
+  describe 'before_update' do
+    it 'calls handle_before_update on each of its embedded models' do
+      account = Account.create
+      feature = account.feature
+      feature.should_receive(:handle_before_update)
+      account.update_attributes(:feature_limit => 1)
+    end
+  end
+
 end
